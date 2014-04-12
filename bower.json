@@ -1,0 +1,11 @@
+{
+  "name": "tablamo",
+  "private": true,
+  "dependencies": {
+    "jquery": "~1.11.0",
+    "foundation": "zurb/bower-foundation#~5.2.2",
+    "d3": "~3.4.5",
+    "lodash": "~2.4.1"
+  },
+  "devDependencies": {}
+}
