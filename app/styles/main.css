@@ -4685,3 +4685,63 @@ th.hide-for-touch {
 
 .touch th.show-for-touch {
   display: table-cell !important; }
+
+.tablamo-container {
+  position: relative; }
+  .tablamo-container .tablamo {
+    height: 400px;
+    overflow: auto; }
+  .tablamo-container .sticky-header {
+    position: absolute;
+    top: 0;
+    left: 0; }
+
+table {
+  display: block; }
+
+.tablamo-container {
+  height: 400px;
+  width: 100%;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column; }
+
+.tablamo-header {
+  display: -webkit-flex;
+  display: flex;
+  background-color: yellow;
+  overflow-y: scroll; }
+
+.tablamo-body {
+  position: relative;
+  -webkit-flex: 1 1 0;
+  flex: 1 1 0;
+  background-color: pink;
+  overflow-y: scroll;
+  overflow-y: auto; }
+
+.tablamo-row {
+  width: 100%;
+  line-height: 1.4;
+  position: absolute;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  border-bottom: 1px solid #3F5765; }
+
+.tablamo-cell {
+  -webkit-flex: 1 1 0;
+  flex: 1 1 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 2px;
+  border-left: 1px solid #3F5765; }
+
+.tablamo-header-row {
+  position: relative; }
+

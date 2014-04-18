@@ -13,27 +13,62 @@
   }
 
   Tablamo.prototype.createTable = function (element) {
-    var table = d3.select(element).append('table');
-    table.append('thead').append('tr');
-    table.append('tbody');
+    this._table = d3.select(element)
+      .classed('tablamo-container', true)
+      .append('table')
+      .classed('tablamo', true);
+      
+    this._table.append('thead').append('tr');
+    this._table.append('tbody');
+
+    this._stickyTable = d3.select(element).append('table').classed('sticky-header', true);
+    this._stickyTable.append('thead').append('tr');
+    this._stickyTable.append('tbody');
   };
 
   Tablamo.prototype.bindDataToTableHeader = function (element, columns) {
-    var th = d3.select(element).select('thead tr').selectAll('th').data(columns);
+    var th = this._table.select('tr')
+      .selectAll('th')
+      .data(columns);
 
     th.html(function (d) {
       return d.field;
     });
 
-    th.enter().append('th').html(function (d) {
-      return d.field;
-    });
+    th.enter()
+      .append('th')
+      .html(function (d) {
+        return d.field;
+      });
 
-    th.exit().remove();
+    th.exit()
+      .remove();
+
+    setTimeout(function () {
+      this._stickyTable.style('width', this._table.select('thead').style('width'));
+
+      th = this._stickyTable.select('tr')
+        .selectAll('th')
+        .data(columns);
+
+      th.html(function (d) {
+        return d.field;
+      });
+
+      th.enter()
+        .append('th').html(function (d) {
+          return d.field;
+        }).style('width', function (d, i) {
+          return d3.select('.tablamo th:nth-child(' + (i + 1) +')').style('width');
+        });
+
+      th.exit()
+        .remove();
+    }.bind(this), 199);
   };
 
   Tablamo.prototype.bindDataToTableBody = function (element, columns, data) {
-    var tr = d3.select(element).select('tbody').selectAll('tr').data(data);
+    var tr = d3.select(element).select('.tablamo tbody').selectAll('tr').data(data);
 
     tr.enter().append('tr');
 
@@ -95,8 +130,7 @@
 
   var tablamo = new Tablamo(document.body, columns, data);
   
-  setInterval(function () {
-    tablamo.setData(generateData(columns));
-  }, 1000);
-
+  // setInterval(function () {
+  //   tablamo.setData(generateData(columns));
+  // }, 1000);
 })();
