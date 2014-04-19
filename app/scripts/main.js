@@ -4,9 +4,25 @@
   function generateData(columns) {
     var data = [];
 
-    var generateCell = function(column) {
-      row[column.field] = (column.field === 'id') ? i : Math.random();
+    var types = {
+      colour: ['blue', 'green', 'yellow', 'white'],
+      size: ['tiny', 'small', 'medium', 'large'],
+      hungry: ['yes', 'no'],
+      weather: ['sun', 'rain', 'smog', 'snow', 'fog']
     };
+
+    function generateCell(column) {
+      var type = types[column.field];
+      var value;
+
+      if (type) {
+        value = type[Math.floor(Math.random() * type.length)];
+      } else {
+        value = (column.field === 'id') ? i : Math.ceil(Math.random() * 10);
+      }
+
+      row[column.field] = value;
+    }
 
     for (var i = 0; i < 10000; i++) {
       var row = {};
@@ -20,15 +36,32 @@
   }
 
   var columns = [{
-    field: 'id'
+    field: 'id',
+    width: 30
   }, {
-    field: 'one'
+    field: 'colour',
+    width: 100
   }, {
-    field: 'two'
+    field: 'size',
+    width: 60
   }, {
-    field: 'three'
+    field: 'hungry',
+    name: 'hungry?',
+    width: 30
+  }, {
+    field: 'weather',
+    width: 30
+  }, {
+    field: 'response',
+    width: 30
   }];
   var data = generateData(columns);
 
-  var tablamo = new Tablamo(document.body, columns, data);
+  var options = {
+    visibleRows: 25,
+    offset: 100,
+    rowHeight: 36
+  };
+
+  var tablamo = new Tablamo(document.body, columns, data, options);
 })();

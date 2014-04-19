@@ -12,7 +12,11 @@
   var offset = 100;
   var rowHeight = 36;
 
-  function Tablamo(element, columns, data) {
+  function Tablamo(element, columns, data, options) {
+    visibleRows = options.visibleRows;
+    offset = options.offset;
+    rowHeight = options.rowHeight;
+
     this._element = element;
     this._columns = columns;
     this._data = data.map(function(row, i) {
@@ -109,14 +113,15 @@
       .data(columns);
 
     columnHeaders.html(function(d) {
-      return d.field;
+      console.log(d);
+      return d.name || d.field;
     });
 
     columnHeaders.enter()
       .append('th')
       .classed('tablamo-cell', true)
       .html(function(d) {
-        return d.field;
+        return d.name || d.field;
       });
 
     columnHeaders.exit()

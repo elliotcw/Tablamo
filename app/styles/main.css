@@ -4701,7 +4701,7 @@ table {
   border-spacing: 0;
   margin-bottom: 0; }
 
-td {
+th, td {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis; }

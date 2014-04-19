@@ -16,11 +16,9 @@ self.addEventListener('message', function(e) {
   var minRow = Math.floor(topRow - options.offset);
   var maxRow = Math.ceil(bottomRow + options.offset);
 
-  console.log('before' + minRow);
-
+  // Make sure first row is even to keep
+  // stripes in sync
   minRow = (minRow % 2) ? minRow - 1 : minRow;
-
-  console.log(minRow);
 
   sortedRows.forEach(function (row) {
     if (row.rowIndex >= minRow && row.rowIndex < maxRow) {
