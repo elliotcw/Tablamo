@@ -1,0 +1,32 @@
+@mixin table {
+  .tablamo-viewport {
+    overflow: auto;
+    height: 300px;
+  }
+
+  .tablamo-thing {
+    position: relative;
+  }
+
+  table {
+    width: 100%;
+    table-layout: fixed;
+    empty-cells: show;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-bottom: 0; 
+  }
+
+  td {
+    overflow: hidden;
+    white-space: nowrap;     
+    text-overflow: ellipsis;    
+  }
+
+  .tablamo-body {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: none;
+  }
+}

@@ -10,11 +10,20 @@ self.addEventListener('message', function(e) {
   });
 
   var filteredRows = [];
-  var topRow = Math.floor(options.scrollTop / options.rowHeight);
+  var topRow = options.scrollTop / options.rowHeight;
   var bottomRow = topRow + options.visibleRows;
 
+  var minRow = Math.floor(topRow - options.offset);
+  var maxRow = Math.ceil(bottomRow + options.offset);
+
+  console.log('before' + minRow);
+
+  minRow = (minRow % 2) ? minRow - 1 : minRow;
+
+  console.log(minRow);
+
   sortedRows.forEach(function (row) {
-    if (row.rowIndex > (topRow - options.offset) && row.rowIndex < (bottomRow + options.offset)) {
+    if (row.rowIndex >= minRow && row.rowIndex < maxRow) {
       filteredRows.push(row);
     }
   });

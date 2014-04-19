@@ -8,9 +8,9 @@
 }(this, function(d3, _) {
   'use strict';
 
-  var visibleRows = 15;
+  var visibleRows = 25;
   var offset = 100;
-  var rowHeight = 26;
+  var rowHeight = 36;
 
   function Tablamo(element, columns, data) {
     this._element = element;
@@ -26,12 +26,12 @@
     var worker = new Worker('scripts/filter-worker.js');
 
     worker.addEventListener('message', function(e) {
-      this.bindDataToTableBody(this._element, e.data.rows);
+      this.bindDataToTableBody(this._element, this._columns, e.data.rows);
     }.bind(this), false);
 
     var self = this;
 
-    this._body.on('scroll', _.debounce(function() {
+    this._element.select('.tablamo-viewport').on('scroll', _.debounce(function() {
       worker.postMessage({
         columns: self._columns,
         rows: self._data,
@@ -60,24 +60,52 @@
     this._element = d3.select(element).classed('tablamo-container', true);
 
     this._header = this._element
-      .append('div')
+      .append('table')
       .classed('tablamo-header', true);
+
+    this._header.append('colgroup');
+    this._header.append('thead');
 
     this._body = this._element
       .append('div')
+      .classed('tablamo-viewport', true)
+      .append('div')
+      .classed('tablamo-thing', true)
+      .append('table')
       .classed('tablamo-body', true);
 
-    this._viewport = this._body
-      .append('div')
-      .classed('tablamo-viewport', true);
+    this._body.append('colgroup');
+    this._body.append('tbody');
+
   };
 
   Tablamo.prototype.bindDataToTableHeader = function(element, columns) {
+    var colgroup = this._header
+      .select('colgroup')
+      .selectAll('col')
+      .data(columns);
+
+    colgroup.style('width', function (d) {
+      var width = (d.width) ? d.width + 'px' : (1 / columns.length) * 100 + '%';
+      return width;
+    });
+
+    colgroup.enter()
+      .append('col')
+      .style('width', function (d) {
+      var width = (d.width) ? d.width + 'px' : (1 / columns.length) * 100 + '%';
+      return width;
+    });
+
+    colgroup.exit()
+      .remove();
+
     var columnHeaders = this._header
-      .append('div')
+      .select('thead')
+      .append('tr')
       .classed('tablamo-row', true)
       .classed('tablamo-header-row', true)
-      .selectAll('div')
+      .selectAll('th')
       .data(columns);
 
     columnHeaders.html(function(d) {
@@ -85,7 +113,7 @@
     });
 
     columnHeaders.enter()
-      .append('div')
+      .append('th')
       .classed('tablamo-cell', true)
       .html(function(d) {
         return d.field;
@@ -95,28 +123,40 @@
       .remove();
   };
 
-  Tablamo.prototype.bindDataToTableBody = function(element, data) {
+  Tablamo.prototype.bindDataToTableBody = function(element, columns, data) {
 
-    this._viewport.style({
-      height: this._data.length * rowHeight + 'px'
+    this._element.select('.tablamo-thing').style('height', (this._data.length * rowHeight) + 'px');
+
+    var colgroup = this._body
+      .select('colgroup')
+      .selectAll('col')
+      .data(columns);
+
+    colgroup.style('width', function (d) {
+      var width = (d.width) ? d.width + 'px' : (1 / columns.length) * 100 + '%';
+      return width;
     });
 
-    var rows = this._viewport
-      .selectAll('.tablamo-row')
+    colgroup.enter()
+      .append('col')
+      .style('width', function (d) {
+      var width = (d.width) ? d.width + 'px' : (1 / columns.length) * 100 + '%';
+      return width;
+    });
+
+    this._body.style('top', (data[0].key * rowHeight) + 'px');
+
+    var rows = this._body.select('tbody')
+      .selectAll('tr')
       .data(data)
-      .style('top', function(d) {
-        return (rowHeight * d.key) + 'px';
-      })
       .attr('row-index', function (d) {
         return d.key;
       });
 
     rows.enter()
-      .append('div')
+      .append('tr')
       .classed('tablamo-row', true)
-      .style('top', function(d) {
-        return (rowHeight * d.key) + 'px';
-      })
+      .style('height', rowHeight + 'px')
       .attr('row-index', function (d) {
         return d.key;
       });
@@ -124,14 +164,14 @@
     rows.exit()
       .remove();
 
-    var cells = rows.selectAll('.tablamo-cell').data(function (d) {
+    var cells = rows.selectAll('td').data(function (d) {
       return d.values;
     }).html(function (d) {
       return d;
     });
 
     cells.enter()
-      .append('div')
+      .append('td')
       .classed('tablamo-cell', true)
       .html(function (d) {
         return d;
@@ -148,7 +188,7 @@
 
   Tablamo.prototype.setData = function(data) {
     this._data = data;
-    this.bindDataToTableBody(this._element, data);
+    this.bindDataToTableBody(this._element, this._columns, data);
   };
 
   return Tablamo;

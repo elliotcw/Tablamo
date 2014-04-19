@@ -25,57 +25,60 @@
 
 $tablamo-cell-padding: 2px;
 
-.tablamo-container {
-    height: 400px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-}
+.flex {
 
-.tablamo-header {
-    display: flex;
-    background-color: yellow;
-    overflow-y: scroll;
-}
+    .tablamo-container {
+        height: 400px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
 
-.tablamo-body {
-    position: relative;    
-    flex: 1 1 0;
-    background-color: pink;
-    overflow-y: scroll;
-    overflow-y: auto;
-}
+    .tablamo-header {
+        display: flex;
+        background-color: yellow;
+        overflow-y: scroll;
+    }
 
-.tablamo-viewport {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-}
+    .tablamo-body {
+        position: relative;    
+        flex: 1 1 0;
+        background-color: pink;
+        overflow-y: scroll;
+        overflow-y: auto;
+    }
 
-.tablamo-row {
-    width: 100%;
-    line-height: 1.4;
-    position: absolute;    
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: row;
-    border-bottom: 1px solid $color-mid;
-}
+    .tablamo-viewport {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
 
-.tablamo-cell {
-    flex: 1 1 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    padding: $tablamo-cell-padding;
-    border-left: 1px solid $color-mid;
-}
+    .tablamo-row {
+        width: 100%;
+        line-height: 1.4;
+        position: absolute;    
+        display: flex;
+        flex-wrap: nowrap;
+        flex-direction: row;
+        border-bottom: 1px solid $color-mid;
+    }
 
-.tablamo-header-row {
-    position: relative;
-}
+    .tablamo-cell {
+        flex: 1 1 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding: $tablamo-cell-padding;
+        border-left: 1px solid $color-mid;
+    }
 
-.tablamo-header-cell {
+    .tablamo-header-row {
+        position: relative;
+    }
 
+    .tablamo-header-cell {
+
+    }
 }

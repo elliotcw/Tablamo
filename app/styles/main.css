@@ -4686,58 +4686,57 @@ th.hide-for-touch {
 .touch th.show-for-touch {
   display: table-cell !important; }
 
-background: #fff;
-margin-bottom: 1.25rem;
-border: solid 1px #ddd;
-thead, tfoot {
-  background: #f5f5f5; }
-  thead tr th, thead tr td, tfoot tr th, tfoot tr td {
-    padding: 0.5rem 0.625rem 0.625rem;
-    font-size: 0.875rem;
-    font-weight: bold;
-    color: #222;
-    text-align: left; }
+.tablamo-viewport {
+  overflow: auto;
+  height: 300px; }
 
-tr th, tr td {
-  padding: 0.5625rem 0.625rem;
-  font-size: 0.875rem;
-  color: #222; }
-tr.even, tr.alt, tr:nth-of-type(even) {
-  background: #f9f9f9; }
+.tablamo-thing {
+  position: relative; }
 
-thead tr th, tfoot tr th, tbody tr td, tr td, tfoot tr td {
-  display: table-cell;
-  line-height: 1.125rem; }
+table {
+  width: 100%;
+  table-layout: fixed;
+  empty-cells: show;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin-bottom: 0; }
 
-.tablamo-container {
+td {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis; }
+
+.tablamo-body {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: none; }
+
+.flex .tablamo-container {
   height: 400px;
   width: 100%;
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: column;
   flex-direction: column; }
-
-.tablamo-header {
+.flex .tablamo-header {
   display: -webkit-flex;
   display: flex;
   background-color: yellow;
   overflow-y: scroll; }
-
-.tablamo-body {
+.flex .tablamo-body {
   position: relative;
   -webkit-flex: 1 1 0;
   flex: 1 1 0;
   background-color: pink;
   overflow-y: scroll;
   overflow-y: auto; }
-
-.tablamo-viewport {
+.flex .tablamo-viewport {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%; }
-
-.tablamo-row {
+.flex .tablamo-row {
   width: 100%;
   line-height: 1.4;
   position: absolute;
@@ -4748,8 +4747,7 @@ thead tr th, tfoot tr th, tbody tr td, tr td, tfoot tr td {
   -webkit-flex-direction: row;
   flex-direction: row;
   border-bottom: 1px solid #3F5765; }
-
-.tablamo-cell {
+.flex .tablamo-cell {
   -webkit-flex: 1 1 0;
   flex: 1 1 0;
   overflow: hidden;
@@ -4757,7 +4755,5 @@ thead tr th, tfoot tr th, tbody tr td, tr td, tfoot tr td {
   white-space: nowrap;
   padding: 2px;
   border-left: 1px solid #3F5765; }
-
-.tablamo-header-row {
+.flex .tablamo-header-row {
   position: relative; }
-
