@@ -4686,18 +4686,28 @@ th.hide-for-touch {
 .touch th.show-for-touch {
   display: table-cell !important; }
 
-.tablamo-container {
-  position: relative; }
-  .tablamo-container .tablamo {
-    height: 400px;
-    overflow: auto; }
-  .tablamo-container .sticky-header {
-    position: absolute;
-    top: 0;
-    left: 0; }
+background: #fff;
+margin-bottom: 1.25rem;
+border: solid 1px #ddd;
+thead, tfoot {
+  background: #f5f5f5; }
+  thead tr th, thead tr td, tfoot tr th, tfoot tr td {
+    padding: 0.5rem 0.625rem 0.625rem;
+    font-size: 0.875rem;
+    font-weight: bold;
+    color: #222;
+    text-align: left; }
 
-table {
-  display: block; }
+tr th, tr td {
+  padding: 0.5625rem 0.625rem;
+  font-size: 0.875rem;
+  color: #222; }
+tr.even, tr.alt, tr:nth-of-type(even) {
+  background: #f9f9f9; }
+
+thead tr th, tfoot tr th, tbody tr td, tr td, tfoot tr td {
+  display: table-cell;
+  line-height: 1.125rem; }
 
 .tablamo-container {
   height: 400px;
@@ -4720,6 +4730,12 @@ table {
   background-color: pink;
   overflow-y: scroll;
   overflow-y: auto; }
+
+.tablamo-viewport {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%; }
 
 .tablamo-row {
   width: 100%;

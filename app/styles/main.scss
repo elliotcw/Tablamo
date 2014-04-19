@@ -1,28 +1,27 @@
 @import "foundation/scss/foundation";
+@import "settings";
+@import "table";
 
-$color-dark: #2B3A42;
-$color-mid: #3F5765;
-$color-light: #BDD4DE;
-$color-alert: #E74C3C;
+@include table;
 
-.tablamo-container {
-    position: relative;
+// .tablamo-container {
+//     position: relative;
 
-    .tablamo {
-        height: 400px;
-        overflow: auto;
-    }
+//     .tablamo {
+//         height: 400px;
+//         overflow: auto;
+//     }
 
-    .sticky-header {
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
-}
+//     .sticky-header {
+//         position: absolute;
+//         top: 0;
+//         left: 0;
+//     }
+// }
 
-table {
-    display: block;
-}
+// table {
+//     display: block;
+// }
 
 $tablamo-cell-padding: 2px;
 
@@ -45,6 +44,13 @@ $tablamo-cell-padding: 2px;
     background-color: pink;
     overflow-y: scroll;
     overflow-y: auto;
+}
+
+.tablamo-viewport {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
 }
 
 .tablamo-row {
