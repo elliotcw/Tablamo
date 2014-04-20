@@ -11,6 +11,8 @@
   var visibleRows = 25;
   var offset = 100;
   var rowHeight = 36;
+  var totalRows;
+  var expandedGroups = {};
 
   function Tablamo(element, columns, data, options) {
     visibleRows = options.visibleRows;
@@ -26,7 +28,17 @@
 
     this.createTable(element);
     this.bindDataToTableHeader(element, columns);
+    this.refreshTable();
 
+    var that = this;
+
+    this._element.select('.tablamo-viewport').on('scroll', _.debounce(function() {
+      that.scrollTop = this.scrollTop;
+      that.refreshTable();
+    }, 100));
+  }
+
+  Tablamo.prototype.refreshTable = function () {
     var filterOptions = {
       scrollTop: this.scrollTop,
       rowHeight: rowHeight,
@@ -34,27 +46,15 @@
       visibleRows: visibleRows
     };
 
-    this.bindDataToTableBody(this._element, this._columns, this.filterToVisibleRows(this._columns, this._data, filterOptions));
+    var nest = this.groupBy(this._data, [{
+      field: 'colour'
+    }, {
+      field: 'weather'
+    }]);
+    var subset = this.filterToVisibleRows(this._columns, nest, filterOptions);
+    this.bindDataToTableBody(this._element, this._columns, subset);
+  };
 
-    var self = this;
-
-    this._element.select('.tablamo-viewport').on('scroll', _.debounce(function() {
-      var filterOptions = {
-        scrollTop: this.scrollTop,
-        rowHeight: rowHeight,
-        offset: offset,
-        visibleRows: visibleRows
-      };
-
-      var nest = self.groupBy(self._data, [{
-        field: 'colour'
-      }, {
-        field: 'weather'
-      }]);
-      var subset = self.filterToVisibleRows(self._columns, nest, filterOptions);
-      self.bindDataToTableBody(self._element, self._columns, subset);
-    }, 100));
-  }
 
   Tablamo.prototype.createTable = function(element) {
     this._element = d3.select(element).classed('tablamo-container', true);
@@ -125,9 +125,11 @@
 
   Tablamo.prototype.bindDataToTableBody = function(element, columns, data) {
 
+    var that = this;
+
     console.log(data);
 
-    this._element.select('.tablamo-thing').style('height', (this._data.length * rowHeight) + 'px');
+    this._element.select('.tablamo-thing').style('height', (totalRows * rowHeight) + 'px');
 
     var colgroup = this._body
       .select('colgroup')
@@ -146,41 +148,73 @@
         return width;
       });
 
-    this._body.style('top', (data[0].key * rowHeight) + 'px');
+    this._body.style('top', (data[0][0].rowIndex * rowHeight) + 'px');
 
-    var rows = this._body.select('tbody')
-      .selectAll('tr')
+    var groups = this._body.selectAll('tbody')
       .data(data)
+      .attr('gorup-name', function(d) {
+        return d[0].groupName;
+      });
+
+    groups.enter()
+      .append('tbody')
+      .attr('gorup-name', function(d) {
+        return d[0].groupName;
+      });
+
+    groups.exit()
+      .remove();
+
+    var rows = groups.selectAll('tr')
+      .data(function (d) {
+        return d;
+      })
       .attr('row-index', function(d) {
-        return d.key;
+        return d.rowIndex;
       });
 
     rows.enter()
       .append('tr')
-      .classed('tablamo-row', true)
-      .style('height', rowHeight + 'px')
+      .classed('group-header', function (d) {
+        return (d instanceof SummaryRow);
+      })
       .attr('row-index', function(d) {
-        return d.key;
+        return d.rowIndex;
       });
 
     rows.exit()
       .remove();
 
-    var cells = rows.selectAll('td').data(function(d) {
-      return d.values;
-    }).html(function(d) {
-      return d;
-    });
+    var cells = rows.selectAll('td')
+      .data(function(d) {
+        if (d instanceof SummaryRow) {
+          return [d.groupName];
+        } else {
+          return columns.map(function (column) {
+            return d[column.field];
+          });
+        }
+      })
+      .html(function(d) {
+        return d;
+      });
 
     cells.enter()
       .append('td')
-      .classed('tablamo-cell', true)
       .html(function(d) {
         return d;
       });
 
     cells.exit()
       .remove();
+
+    groups.selectAll('.group-header')
+      .on('click', function (d) {
+        d.expanded = !d.expanded;
+        expandedGroups[d.groupName] = d.expanded;
+
+        that.refreshTable();
+      });
   };
 
   Tablamo.prototype.groupBy = function(data, groupByColumns) {
@@ -194,6 +228,11 @@
 
     return nestFn.entries.call(this, data);
   };
+
+  function SummaryRow(row) {
+      this.groupName = row.groupName;
+      this.expanded = row.expanded;
+    }
 
   Tablamo.prototype.filterToVisibleRows = function(columns, data, options) {
     options.scrollTop = options.scrollTop || 0;
@@ -210,16 +249,15 @@
     // stripes in sync
     minRow = (minRow % 2) ? minRow - 1 : minRow;
 
+    totalRows = 0;
+
     function addRow(row) {
+      totalRows++;
       // TODO: looping over each element - this should be a straight pick
-      if ((filteredData.length + 1) > minRow && (filteredData.length + 1) < maxRow) {
+      if (totalRows > minRow && (filteredData.length + 1) < maxRow) {
+        row.rowIndex = totalRows;
         filteredData.push(row);
       }
-    }
-
-    function SummaryRow(row) {
-      this.groupName = row.groupName;
-      this.expanded = row.expanded;
     }
 
     function addToFiltered(group) {
@@ -230,10 +268,10 @@
           // Add a summary row          
           addRow(new SummaryRow({
             groupName: rowOrGroup.key,
-            expanded: rowOrGroup.expanded
+            expanded: expandedGroups[rowOrGroup.key]
           }));
 
-          if (rowOrGroup.expanded) {
+          if (expandedGroups[rowOrGroup.key]) {
             // If its expanded we need to include its children
             addToFiltered(rowOrGroup);
           }
@@ -246,18 +284,27 @@
 
     addToFiltered({values: data});
 
-    console.log(filteredData);
+    var groups = [];
+    var currentGroup = [];
 
-    filteredData = filteredData.map(function(row) {
-      return {
-        key: row.rowIndex,
-        values: columns.map(function(column) {
-          return row[column.field];
-        })
-      };
+    filteredData.forEach(function (row) {
+      if (row instanceof SummaryRow) {
+        if (currentGroup.length) {
+          groups.push(currentGroup);
+        }
+        currentGroup = [];
+        currentGroup.push(row);
+      } else {
+        currentGroup.push(row);
+      }
     });
 
-    return filteredData;
+    // Need to push the last group in
+    if (currentGroup) {
+      groups.push(currentGroup);
+    }
+
+    return groups;
   };
 
   Tablamo.prototype.setColumns = function(columns) {
