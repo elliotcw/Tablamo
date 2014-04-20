@@ -3,30 +3,79 @@
     overflow: auto;
     height: 300px;
   }
-
   .tablamo-thing {
     position: relative;
   }
-
+  table {
+    background: #fff;
+    margin-bottom: 1.25rem;
+    border: solid 1px #ddd;
+  }
+  table thead, table tfoot {
+    background: $colour-light;
+  }
+  table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td {
+    padding: 0.5rem 0.625rem 0.625rem;
+    font-size: 0.875rem;
+    font-weight: bold;
+    color: #222;
+    text-align: left;
+  }
+  table tr th, table tr td {
+    padding: 0.5625rem 0.625rem;
+    font-size: 0.875rem;
+    color: #222;
+  }  
+  table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoot tr td {
+    display: table-cell;
+    line-height: 1.125rem;
+  }
   table {
     width: 100%;
     table-layout: fixed;
     empty-cells: show;
     border-collapse: collapse;
     border-spacing: 0;
-    margin-bottom: 0; 
+    margin-bottom: 0;
   }
-
   th, td {
     overflow: hidden;
-    white-space: nowrap;     
-    text-overflow: ellipsis;    
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
-
+  tr {
+    border-bottom: 1px solid $colour-light;
+  }
   .tablamo-body {
     position: absolute;
     top: 0;
     left: 0;
     border: none;
+  }
+  [level="1"] {
+    background-color: rgba(0, 0, 0, 0.05);
+    td:first-of-type {
+      padding-left: 20px;
+    }
+  }
+  [level="2"] {
+    background-color: rgba(0, 0, 0, 0.1);
+    td:first-of-type {
+      padding-left: 40px;
+    }
+  }
+  [level="3"] {
+    background-color: rgba(0, 0, 0, 0.15);
+    td:first-of-type {
+      padding-left: 60px;
+    }
+  }
+  .group-header {
+    i {
+      padding-right: 5px;
+    }
+    .fa-caret-down {
+      transform: rotate(-45deg);
+    }
   }
 }

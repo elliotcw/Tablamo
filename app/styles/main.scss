@@ -4,6 +4,10 @@
 
 @include table;
 
+table tr.even, table tr.alt, table tr:nth-of-type(even) {
+    background: none;
+  }
+
 // .tablamo-container {
 //     position: relative;
 
@@ -62,7 +66,7 @@ $tablamo-cell-padding: 2px;
         display: flex;
         flex-wrap: nowrap;
         flex-direction: row;
-        border-bottom: 1px solid $color-mid;
+        border-bottom: 1px solid $colour-mid;
     }
 
     .tablamo-cell {
@@ -71,7 +75,7 @@ $tablamo-cell-padding: 2px;
         text-overflow: ellipsis;
         white-space: nowrap;
         padding: $tablamo-cell-padding;
-        border-left: 1px solid $color-mid;
+        border-left: 1px solid $colour-mid;
     }
 
     .tablamo-header-row {

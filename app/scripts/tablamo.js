@@ -123,6 +123,11 @@
       .remove();
   };
 
+  function groupFormatter(value, d) {
+    var icon = (d.expanded) ? 'fa-caret-down' : 'fa-caret-right';
+    return '<i class="fa ' + icon + '"></i>' + value;
+  }
+
   Tablamo.prototype.bindDataToTableBody = function(element, columns, data) {
 
     var that = this;
@@ -154,12 +159,28 @@
       .data(data)
       .attr('gorup-name', function(d) {
         return d[0].groupName;
+      })
+      .attr('level', function (d) {
+        if (d[0] instanceof SummaryRow) {
+          return d[0].level;
+        }
+      })
+      .classed('expanded', function (d) {
+        return (d[0] instanceof SummaryRow && d[0].expanded);
       });
 
     groups.enter()
       .append('tbody')
       .attr('gorup-name', function(d) {
         return d[0].groupName;
+      })
+      .attr('level', function (d) {
+        if (d[0] instanceof SummaryRow) {
+          return d[0].level;
+        }
+      })
+      .classed('expanded', function (d) {
+        return (d[0] instanceof SummaryRow && d[0].expanded);
       });
 
     groups.exit()
@@ -169,6 +190,9 @@
       .data(function (d) {
         return d;
       })
+      .classed('group-header', function (d) {
+        return (d instanceof SummaryRow);
+      })
       .attr('row-index', function(d) {
         return d.rowIndex;
       });
@@ -177,6 +201,9 @@
       .append('tr')
       .classed('group-header', function (d) {
         return (d instanceof SummaryRow);
+      })
+      .classed('expanded', function (d) {
+        return (d instanceof SummaryRow && d.expanded);
       })
       .attr('row-index', function(d) {
         return d.rowIndex;
@@ -188,21 +215,38 @@
     var cells = rows.selectAll('td')
       .data(function(d) {
         if (d instanceof SummaryRow) {
-          return [d.groupName];
+          return columns.map(function (column, i) {
+            if (i === 0) {
+              d.formatter = groupFormatter;
+              d.value = d.groupName;
+              return d;
+            } else {
+              return {value: ''};
+            }
+            return {
+              value: d[column.field],
+              formatter: column.formatter
+            };
+          });
         } else {
           return columns.map(function (column) {
-            return d[column.field];
+            return {
+              value: d[column.field],
+              formatter: column.formatter
+            };
           });
         }
       })
       .html(function(d) {
-        return d;
+        var value = (d.formatter) ? d.formatter(d.value, d) : d.value;
+        return value;
       });
 
     cells.enter()
       .append('td')
       .html(function(d) {
-        return d;
+        var value = (d.formatter) ? d.formatter(d.value, d) : d.value;
+        return value;
       });
 
     cells.exit()
@@ -230,9 +274,8 @@
   };
 
   function SummaryRow(row) {
-      this.groupName = row.groupName;
-      this.expanded = row.expanded;
-    }
+    _.extend(this, row);
+  }
 
   Tablamo.prototype.filterToVisibleRows = function(columns, data, options) {
     options.scrollTop = options.scrollTop || 0;
@@ -249,10 +292,11 @@
     // stripes in sync
     minRow = (minRow % 2) ? minRow - 1 : minRow;
 
-    totalRows = 0;
+    totalRows = -1;
 
     function addRow(row) {
       totalRows++;
+
       // TODO: looping over each element - this should be a straight pick
       if (totalRows > minRow && (filteredData.length + 1) < maxRow) {
         row.rowIndex = totalRows;
@@ -260,7 +304,9 @@
       }
     }
 
-    function addToFiltered(group) {
+    function addToFiltered(group, level) {
+      level++;
+
       group.values.forEach(function(rowOrGroup) {
         // TODO: need to do this on type
         if (rowOrGroup.key && rowOrGroup.values) {
@@ -268,12 +314,13 @@
           // Add a summary row          
           addRow(new SummaryRow({
             groupName: rowOrGroup.key,
-            expanded: expandedGroups[rowOrGroup.key]
+            expanded: expandedGroups[rowOrGroup.key],
+            level: level
           }));
 
           if (expandedGroups[rowOrGroup.key]) {
             // If its expanded we need to include its children
-            addToFiltered(rowOrGroup);
+            addToFiltered(rowOrGroup, level);
           }
         } else {
           // We got a row
@@ -282,7 +329,7 @@
       });
     }
 
-    addToFiltered({values: data});
+    addToFiltered({values: data}, -1);
 
     var groups = [];
     var currentGroup = [];
