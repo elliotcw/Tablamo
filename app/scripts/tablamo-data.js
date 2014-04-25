@@ -11,7 +11,7 @@
 
   function TablamoData(everything) {
 
-    this. listeners = {};
+    this.listeners = {};
 
     var requiredAttributes = ['data', 'options', 'columns'];
 
