@@ -56,26 +56,9 @@
     width: 30
   }];
   var data = generateData(columns);
-
-  var initOptions = {
-    sorting: true,
-    virtualized: {
-      approximateVisibleRows: 25,
-      offsetEitherSide: 100,
-      rowHeight: 36
-    }
-  };
-
-  var dynamicOptions = {
-    sortAscending: true,
-    sortColumns: [{field: 'column1'}],
-    pivot: [{field: 'column1'}]
-  };
-
   var options = {
-    init: initOptions,
-    dynamic: dynamicOptions
+    sortBy: [{field: 'response', direction: 'ascending'}]
   };
 
-  var tablamo = new Tablamo(document.body, columns, data, options);
+  var tablamo = new Tablamo(data, columns, options, document.body);
 })();
