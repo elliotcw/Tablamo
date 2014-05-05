@@ -57,7 +57,48 @@
       });
     }
 
-    return nestFn.entries.call(this, this.get('data'));
+    var nestedData = nestFn.entries.call(this, this.get('data'));
+
+    var flattendData = [];
+
+    function flatten(group) {
+      if (group.values[0].key && group.values[0].values) {
+        group.values.forEach(flatten);
+      } else {
+        flattendData.push(group);
+      }
+    }
+
+    nestedData.forEach(flatten);
+
+    return flattendData;
+  };
+  
+  TablamoData.prototype.limitTo = function (data, options) {
+    var subset = [];
+    var count = 0;
+
+    data.forEach(function (group) {
+      if (count >= options.max) {
+        return;
+      }
+      var newGroup = {
+        key: group.key,
+        values: []
+      };
+      group.values.forEach(function (row) {
+        if (count >= options.max) {
+          return;
+        }
+        if (count >= options.min) {
+          newGroup.values.push(row);
+        }
+        count++;
+      });
+      subset.push(newGroup);
+    });
+
+    return subset;
   };
 
   TablamoData.prototype.trigger = function (eventName, eventData) {

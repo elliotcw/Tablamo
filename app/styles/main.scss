@@ -1,88 +1,9 @@
 @import "foundation/scss/foundation";
 @import "settings";
-@import "table";
-
-@include table;
+@import "tablamo";
 
 table tr.even, table tr.alt, table tr:nth-of-type(even) {
     background: none;
-  }
-
-// .tablamo-container {
-//     position: relative;
-
-//     .tablamo {
-//         height: 400px;
-//         overflow: auto;
-//     }
-
-//     .sticky-header {
-//         position: absolute;
-//         top: 0;
-//         left: 0;
-//     }
-// }
-
-// table {
-//     display: block;
-// }
-
-$tablamo-cell-padding: 2px;
-
-.flex {
-
-    .tablamo-container {
-        height: 400px;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .tablamo-header {
-        display: flex;
-        background-color: yellow;
-        overflow-y: scroll;
-    }
-
-    .tablamo-body {
-        position: relative;    
-        flex: 1 1 0;
-        background-color: pink;
-        overflow-y: scroll;
-        overflow-y: auto;
-    }
-
-    .tablamo-viewport {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-    }
-
-    .tablamo-row {
-        width: 100%;
-        line-height: 1.4;
-        position: absolute;    
-        display: flex;
-        flex-wrap: nowrap;
-        flex-direction: row;
-        border-bottom: 1px solid $colour-mid;
-    }
-
-    .tablamo-cell {
-        flex: 1 1 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        padding: $tablamo-cell-padding;
-        border-left: 1px solid $colour-mid;
-    }
-
-    .tablamo-header-row {
-        position: relative;
-    }
-
-    .tablamo-header-cell {
-
-    }
 }
+
+@include tablamo;

@@ -26,15 +26,21 @@
     var element = this.element;
 
     var table = d3.select(element).selectAll('table')
-      .data([[]]);
+      .data([true, false]);
 
     table.enter()
-      .append('table');
+      .append('table')
+      .classed('tablamo-header', function (d) {
+        return d;
+      })
+      .classed('tablamo-body', function (d) {
+        return !d;
+      });
 
     table.exit()
       .remove();
 
-    var thead = table.selectAll('thead')
+    var thead = d3.select(element).select('.tablamo-header').selectAll('thead')
       .data(function (d) {
         return [d];
       });
@@ -45,15 +51,13 @@
 
     thead.exit()
       .remove();
-    
-    return table;
   };
 
   Tablamo.prototype.drawColumns = function() {
     var columns = this.model.get('columns');
     var element = this.element;
 
-    var headings = d3.select(element).select('thead tr').selectAll('th')
+    var headings = d3.select(element).select('.tablamo-header thead tr').selectAll('th')
       .data(columns)
       .html(function (d) {
         return format(d, d.name || d.field);
@@ -71,9 +75,9 @@
 
   Tablamo.prototype.drawRows = function () {
     var element = this.element;
-    var data = this.model.nest(this.model.get('sortBy'));
+    var data = this.model.limitTo(this.model.nest(this.model.get('sortBy')), {min: 0, max: 500});
     
-    var tbodys = d3.select(element).select('table').selectAll('tbody')
+    var tbodys = d3.select(element).select('.tablamo-body').selectAll('tbody')
       .data(data);
 
     tbodys.enter()

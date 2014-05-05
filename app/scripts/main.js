@@ -24,7 +24,7 @@
       row[column.field] = value;
     }
 
-    for (var i = 0; i < 10000; i++) {
+    for (var i = 0; i < 500; i++) {
       var row = {};
 
       columns.forEach(generateCell);
@@ -57,7 +57,7 @@
   }];
   var data = generateData(columns);
   var options = {
-    sortBy: [{field: 'response', direction: 'ascending'}]
+    sortBy: [{field: 'colour', direction: 'ascending'}, {field: 'size', direction: 'ascending'}, {field: 'hungry', direction: 'ascending'}]
   };
 
   var tablamo = new Tablamo(data, columns, options, document.body);
