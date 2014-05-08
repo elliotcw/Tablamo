@@ -1,3 +1,28 @@
 @mixin tablamo {
-  
+
+  .tablamo-container {
+    height: 200px;
+    overflow: auto;    
+  }
+
+  .tablamo {
+  }
+
+  .sticky-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: none;
+  }
+
+  .sticky-header.show {
+    display: table;
+  }
+
+  .tablamo-main {
+    position: relative;
+    top: 0;
+    left: 0;
+  }
 }

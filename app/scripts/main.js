@@ -57,8 +57,12 @@
   }];
   var data = generateData(columns);
   var options = {
-    sortBy: [{field: 'colour', direction: 'ascending'}, {field: 'size', direction: 'ascending'}, {field: 'hungry', direction: 'ascending'}]
+    // sortBy: [{field: 'colour', direction: 'ascending'}, {field: 'size', direction: 'ascending'}, {field: 'hungry', direction: 'ascending'}],
+    height: 600,
+    rowHeight: 36,
+    eagerLoad: 10
   };
 
-  var tablamo = new Tablamo(data, columns, options, document.body);
+  var tablamo = new Tablamo(data, columns, options);
+  document.body.appendChild(tablamo.element);
 })();

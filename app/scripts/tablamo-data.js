@@ -21,6 +21,13 @@
   };
 
   TablamoData.prototype.set = function (attribute, data) {
+    if (attribute === 'data') {
+      data = data.map(function (row, i) {
+        row.cid = i;
+        return row;
+      })
+    }
+
     this.underlying[attribute] = data;
     this.trigger('change:' + attribute, data);
   };
@@ -28,6 +35,8 @@
   TablamoData.prototype.nest = function (sortBy) {
     var last;
     var nestFn = d3.nest();
+
+    sortBy = sortBy || [{field: 'cid'}];
 
     if (sortBy.length > 1) {
       last = sortBy.pop();
