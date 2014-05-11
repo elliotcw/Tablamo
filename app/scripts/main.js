@@ -37,7 +37,7 @@
 
   var columns = [{
     field: 'id',
-    width: 30
+    width: 50
   }, {
     field: 'colour',
     width: 100
@@ -55,12 +55,12 @@
     field: 'response',
     width: 30
   }];
-  var data = generateData(columns, 100000);
+  var data = generateData(columns, 1000);
   var options = {
     sortBy: [{field: 'colour', direction: 'ascending'}, {field: 'size', direction: 'ascending'}, {field: 'hungry', direction: 'ascending'}],
     height: 600,
     rowHeight: 36,
-    eagerLoad: 100
+    eagerLoad: 10
   };
 
   var tablamo = new Tablamo(data, columns, options);

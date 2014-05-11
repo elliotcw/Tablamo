@@ -28,6 +28,7 @@
 
   Tablamo.prototype.refresh = function () {    
     this.drawTable();
+    this.drawColgroup();
     this.drawColumns();
     this.drawRows();
     this.drawCells();
@@ -82,6 +83,37 @@
       .remove();
   };
 
+  Tablamo.prototype.drawColgroup = function () {
+    var columns = this.model.get('columns');
+    var element = this.element;
+
+    var colgroup = d3.select(element).selectAll('.tablamo-main').selectAll('colgroup')
+      .data([[]]);
+
+    colgroup.enter()
+      .append('colgroup');
+
+    colgroup.exit()
+      .remove();
+
+    var cols = colgroup.selectAll('col')
+      .data(columns)
+      .style('width', function (d) {
+        var width = (d.width) ? d.width + 'px' : (100 / columns.length) + '%';
+        return width;
+      });
+
+    cols.enter()
+      .append('col')
+      .style('width', function (d) {
+        var width = (d.width) ? d.width + 'px' : (100 / columns.length) + '%';
+        return width;
+      });
+
+    cols.exit()
+      .remove();
+  }
+
   Tablamo.prototype.drawColumns = function() {
     var columns = this.model.get('columns');
     var element = this.element;
@@ -111,11 +143,13 @@
     var rowOffset = Math.floor(scrollTop / rowHeight);
     rowOffset = isNaN(rowOffset) ? 0 : rowOffset;
 
+    var eagerLoadedBackSize = (rowOffset < eagerLoad) ? rowOffset : eagerLoad; 
+
     var data = this.model.limitTo(this.model.nest(this.model.get('sortBy')), {min: rowOffset - eagerLoad, max: rowOffset + eagerLoad});
     
     var table = d3.select(element).select('.tablamo-main')
       .style('top', function () {
-        return (rowOffset * rowHeight) + 'px';
+        return ((rowOffset - eagerLoadedBackSize) * rowHeight) + 'px';
       });
 
     var tbodys = table.selectAll('tbody')

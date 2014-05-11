@@ -8,6 +8,10 @@
   .tablamo {
   }
 
+  table {
+    table-layout: fixed;
+  }
+
   .sticky-header {
     position: absolute;
     top: 0;
