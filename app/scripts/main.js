@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function generateData(columns) {
+  function generateData(columns, numberOfRows) {
     var data = [];
 
     var types = {
@@ -24,7 +24,7 @@
       row[column.field] = value;
     }
 
-    for (var i = 0; i < 500; i++) {
+    for (var i = 0; i < numberOfRows; i++) {
       var row = {};
 
       columns.forEach(generateCell);
@@ -55,12 +55,12 @@
     field: 'response',
     width: 30
   }];
-  var data = generateData(columns);
+  var data = generateData(columns, 100000);
   var options = {
-    // sortBy: [{field: 'colour', direction: 'ascending'}, {field: 'size', direction: 'ascending'}, {field: 'hungry', direction: 'ascending'}],
+    sortBy: [{field: 'colour', direction: 'ascending'}, {field: 'size', direction: 'ascending'}, {field: 'hungry', direction: 'ascending'}],
     height: 600,
     rowHeight: 36,
-    eagerLoad: 10
+    eagerLoad: 100
   };
 
   var tablamo = new Tablamo(data, columns, options);
